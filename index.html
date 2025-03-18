@@ -65,6 +65,29 @@
             font-size: 0.8rem;
             opacity: 0.7;
         }
+        
+        .portfolio-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            color: #777;
+            height: 100%;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .portfolio-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .portfolio-placeholder:hover img {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -172,10 +195,12 @@
                 <button class="filter-btn" data-filter="prop">Prop Design</button>
             </div>
             <div class="portfolio-grid">
-                <!-- Portfolio items will appear here. Using placeholders for GitHub Pages version -->
+                <!-- Portfolio items with online image sources -->
                 <div class="portfolio-item" data-category="3d character">
                     <div class="portfolio-image">
-                        <div class="portfolio-placeholder">3D Character Model</div>
+                        <div class="portfolio-placeholder">
+                            <img src="https://images.pexels.com/photos/6330644/pexels-photo-6330644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Fantasy Orc Character">
+                        </div>
                         <div class="portfolio-overlay">
                             <div class="portfolio-info">
                                 <h3>Fantasy Orc</h3>
@@ -186,7 +211,9 @@
                 </div>
                 <div class="portfolio-item" data-category="3d character">
                     <div class="portfolio-image">
-                        <div class="portfolio-placeholder">Wall-E Model</div>
+                        <div class="portfolio-placeholder">
+                            <img src="https://images.pexels.com/photos/5011647/pexels-photo-5011647.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Wall-E Character">
+                        </div>
                         <div class="portfolio-overlay">
                             <div class="portfolio-info">
                                 <h3>Wall-E Recreation</h3>
@@ -197,10 +224,12 @@
                 </div>
                 <div class="portfolio-item" data-category="2d character">
                     <div class="portfolio-image">
-                        <div class="portfolio-placeholder">Simba Artwork</div>
+                        <div class="portfolio-placeholder">
+                            <img src="https://images.pexels.com/photos/3593865/pexels-photo-3593865.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Lion Character Art">
+                        </div>
                         <div class="portfolio-overlay">
                             <div class="portfolio-info">
-                                <h3>Simba</h3>
+                                <h3>Lion Character</h3>
                                 <p>2D Character Artwork</p>
                             </div>
                         </div>
@@ -208,7 +237,9 @@
                 </div>
                 <div class="portfolio-item" data-category="prop 3d">
                     <div class="portfolio-image">
-                        <div class="portfolio-placeholder">Fantasy Axe</div>
+                        <div class="portfolio-placeholder">
+                            <img src="https://images.pexels.com/photos/6498988/pexels-photo-6498988.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Fantasy Axe">
+                        </div>
                         <div class="portfolio-overlay">
                             <div class="portfolio-info">
                                 <h3>Fantasy Axe</h3>
@@ -219,11 +250,26 @@
                 </div>
                 <div class="portfolio-item" data-category="3d character">
                     <div class="portfolio-image">
-                        <div class="portfolio-placeholder">Sci-Fi Robot</div>
+                        <div class="portfolio-placeholder">
+                            <img src="https://images.pexels.com/photos/8566414/pexels-photo-8566414.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Sci-Fi Robot">
+                        </div>
                         <div class="portfolio-overlay">
                             <div class="portfolio-info">
                                 <h3>Sci-Fi Robot</h3>
                                 <p>3D Character Design</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="3d">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <img src="https://images.pexels.com/photos/5011647/pexels-photo-5011647.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Stylized Home">
+                        </div>
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h3>Stylized Home</h3>
+                                <p>3D Environment Design</p>
                             </div>
                         </div>
                     </div>
