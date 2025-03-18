@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niel Hochman - Animation Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="disney-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    <style>
+        /* Specific style for the Simba image to rotate it 90 degrees */
+        .simba-thumbnail {
+            transform: rotate(90deg);
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Profile picture styles */
+        .profile-picture-container {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            border: 5px solid #6a5acd;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .profile-picture {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Adjust these values to crop out the beer */
+            object-position: center 20%; /* Move the image up to hide the bottom part */
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-picture:hover {
+            transform: scale(1.05);
+        }
+        
+        .profile-picture-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background-color: #f0f0f0;
+            color: #777;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .profile-picture-placeholder p {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .profile-picture-placeholder small {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <header>
+        <div class="logo">
+            <span class="logo-text">Niel Hochman</span>
+            <div class="logo-dot"></div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#work" class="nav-link">Work</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="animate-text">Niel Hochman <span class="highlight">Portfolio</span></h1>
+                <p class="subtitle">Animator and Game Developer/Designer</p>
+                <div class="cta-buttons">
+                    <a href="#work" class="btn primary">View My Magic</a>
+                    <a href="#contact" class="btn secondary">Let's Create Together</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="animation-container">
+                    <!-- Animation elements will be added with JavaScript -->
+                    <div class="floating-shape shape1"></div>
+                    <div class="floating-shape shape2"></div>
+                    <div class="floating-shape shape3"></div>
+                    <div class="floating-shape shape4"></div>
+                    <div class="floating-shape shape5"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="section-header">
+                <h2>About <span class="highlight">Me</span></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Hello! I'm Niel Hochman, a creative animator and game developer with a passion for bringing characters and worlds to life. I blend technical expertise with artistic vision to create engaging experiences that captivate audiences across different platforms.</p>
+                    <p>With a background in both animation and game development, I've worked on diverse projects from character animations to interactive game experiences. I love exploring the intersection of storytelling, visual design, and interactive media.</p>
+                    <p>My approach combines technical precision with creative imagination, allowing me to transform concepts into polished, professional animations and game elements that connect with audiences and enhance user experiences.</p>
+                    <div class="resume-button-container">
+                        <a href="resume.html" target="_blank" class="btn primary resume-btn">View My Resume</a>
+                    </div>
+                    <div class="skills">
+                        <div class="skill">
+                            <span class="skill-name">2D Animation</span>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 95%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <span class="skill-name">3D Animation</span>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <span class="skill-name">Game Development</span>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div>
+                        </div>
+                        <div class="skill">
+                            <span class="skill-name">Character Design</span>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 88%"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="image-container">
+                        <div class="profile-picture-container">
+                            <!-- Default placeholder without upload option for GitHub Pages -->
+                            <div class="profile-picture-placeholder">
+                                <p>Niel Hochman</p>
+                                <small>Animator & Game Developer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="work" class="work">
+            <div class="section-header">
+                <h2>My <span class="highlight">Magical</span> Work</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Projects</button>
+                <button class="filter-btn" data-filter="3d">3D Animation</button>
+                <button class="filter-btn" data-filter="character">Character Design</button>
+                <button class="filter-btn" data-filter="2d">2D Artwork</button>
+                <button class="filter-btn" data-filter="prop">Prop Design</button>
+            </div>
+            <div class="portfolio-grid">
+                <!-- Portfolio items will appear here. Using placeholders for GitHub Pages version -->
+                <div class="portfolio-item" data-category="3d character">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">3D Character Model</div>
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h3>Fantasy Orc</h3>
+                                <p>3D Character Design</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="3d character">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">Wall-E Model</div>
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h3>Wall-E Recreation</h3>
+                                <p>3D Character Modeling</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="2d character">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">Simba Artwork</div>
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h3>Simba</h3>
+                                <p>2D Character Artwork</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="prop 3d">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">Fantasy Axe</div>
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h3>Fantasy Axe</h3>
+                                <p>3D Prop Design</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item" data-category="3d character">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">Sci-Fi Robot</div>
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h3>Sci-Fi Robot</h3>
+                                <p>3D Character Design</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="section-header">
+                <h2>Let's <span class="highlight">Connect</span></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email</h3>
+                        <p>nielhochman@example.com</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <h3>Phone</h3>
+                        <p>+1 (555) 123-4567</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Location</h3>
+                        <p>Los Angeles, California</p>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/your-profile" target="_blank" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://twitter.com/your-handle" target="_blank" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="https://instagram.com/your-profile" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="https://behance.net/your-profile" target="_blank" class="social-link"><i class="fab fa-behance"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-text">Niel Hochman</span>
+                <div class="logo-dot"></div>
+            </div>
+            <p>&copy; 2023 Niel Hochman. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
