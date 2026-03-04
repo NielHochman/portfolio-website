@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTypewriter();
   initParallax();
   initScrollReveal();
-  initSkillRings();
   initFilters();
   initGameModal();
   initMobileMenu();
@@ -170,33 +169,6 @@ function initScrollReveal() {
   }, { threshold: 0.15 });
 
   reveals.forEach(el => observer.observe(el));
-}
-
-// ---------------------------------------------------------------------------
-// 5. Skill Rings
-// ---------------------------------------------------------------------------
-function initSkillRings() {
-  const rings = document.querySelectorAll('.skill-ring');
-  if (!rings.length) return;
-
-  const circumference = 2 * Math.PI * 45; // ~282.74
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const ring = entry.target;
-        const percent = parseFloat(ring.getAttribute('data-percent')) || 0;
-        const fill = ring.querySelector('.ring-fill');
-        if (fill) {
-          fill.style.strokeDasharray = circumference;
-          fill.style.strokeDashoffset = circumference - (circumference * percent / 100);
-        }
-        obs.unobserve(ring);
-      }
-    });
-  }, { threshold: 0.5 });
-
-  rings.forEach(ring => observer.observe(ring));
 }
 
 // ---------------------------------------------------------------------------

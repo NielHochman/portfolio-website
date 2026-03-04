@@ -135,6 +135,13 @@
                 min-width: 100%;
             }
         }
+        @media (max-width: 576px) {
+            .project-container { padding: 80px 16px 40px; }
+            .project-header { margin-bottom: 30px; }
+            .project-subtitle { font-size: 1rem; }
+            .tool-tag { font-size: 0.8rem; padding: 4px 10px; }
+            .back-button { width: 100%; text-align: center; }
+        }
     </style>
 </head>
 <body>
@@ -151,11 +158,11 @@
                 <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
             </ul>
         </nav>
-        <div class="menu-toggle">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
+        <button class="menu-toggle" aria-label="Menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
     </header>
 
     <main>

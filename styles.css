@@ -264,7 +264,7 @@ nav ul {
 }
 
 .mobile-nav-overlay .nav-link {
-    font-size: 1.8rem;
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
     font-weight: 600;
     color: var(--color-text);
     padding: 12px 24px;
@@ -309,7 +309,7 @@ nav ul {
 }
 
 .hero-subtitle {
-    font-size: 1.25rem;
+    font-size: clamp(0.95rem, 2.5vw, 1.25rem);
     color: var(--color-text-muted);
     min-height: 2em;
     margin-bottom: 32px;
@@ -422,7 +422,7 @@ nav ul {
 }
 
 .section-header h2 {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
     font-weight: 700;
     display: inline-block;
     position: relative;
@@ -501,53 +501,6 @@ nav ul {
     margin-bottom: 16px;
     font-weight: 300;
     line-height: 1.8;
-}
-
-/* Skill Rings */
-.skill-rings {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 32px;
-    justify-content: flex-start;
-    margin-top: 24px;
-}
-
-.skill-ring {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    width: 100px;
-}
-
-.skill-ring svg {
-    width: 100px;
-    height: 100px;
-    transform: rotate(-90deg);
-}
-
-.ring-bg {
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.06);
-    stroke-width: 6;
-}
-
-.ring-fill {
-    fill: none;
-    stroke: var(--color-primary);
-    stroke-width: 6;
-    stroke-linecap: round;
-    stroke-dasharray: 283;
-    stroke-dashoffset: 283;
-    transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 0 6px rgba(123, 47, 247, 0.5));
-}
-
-.skill-ring-label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--color-text-muted);
-    text-align: center;
 }
 
 /* ===== 9. GAMES SECTION ===== */
@@ -991,6 +944,7 @@ footer {
     .about-layout {
         flex-direction: column;
         align-items: center;
+        gap: 32px;
     }
 
     .about-photo-frame {
@@ -1027,22 +981,18 @@ footer {
         font-size: 1rem;
     }
 
-    .section-header h2 {
-        font-size: 2rem;
-    }
-
     .games-grid,
     .projects-grid {
         grid-template-columns: 1fr;
     }
 
-    .skill-rings {
-        justify-content: center;
-    }
-
     .contact-cards {
         grid-template-columns: 1fr;
     }
+
+    .btn-glass { min-height: 44px; }
+    .modal-close { width: 44px; height: 44px; top: 12px; right: 12px; font-size: 1.6rem; }
+    .filter-pill { min-height: 40px; display: inline-flex; align-items: center; }
 
     /* Hide custom cursor on touch */
     .cursor,
@@ -1069,10 +1019,6 @@ footer {
         margin-bottom: 40px;
     }
 
-    .section-header h2 {
-        font-size: 1.6rem;
-    }
-
     .hero-cta {
         flex-direction: column;
         align-items: center;
@@ -1086,15 +1032,6 @@ footer {
     .about-photo-frame {
         width: 180px;
         height: 180px;
-    }
-
-    .skill-ring {
-        width: 80px;
-    }
-
-    .skill-ring svg {
-        width: 80px;
-        height: 80px;
     }
 
     .filter-pills {
@@ -1126,7 +1063,37 @@ footer {
         border-radius: 0;
     }
 
+    .game-modal-content.portrait {
+        width: 100vw;
+        height: 100vh;
+        aspect-ratio: unset;
+        max-width: none;
+        border-radius: 0;
+    }
+
     .footer-content {
         gap: 16px;
     }
+}
+
+/* ===== 19. RESPONSIVE — 480px ===== */
+@media (max-width: 480px) {
+    header { padding: 14px 4%; }
+    .logo-text { font-size: 1.3rem; }
+    .about-body { padding: 20px; }
+    .about-photo-frame { width: clamp(140px, 45vw, 180px); height: clamp(140px, 45vw, 180px); }
+    .game-card-body,
+    .project-card-body { padding: 16px; }
+    .game-card-image { height: 180px; }
+    .contact-card { padding: 28px 16px; }
+    .mobile-nav-overlay .nav-link { padding: 10px 20px; }
+}
+
+/* ===== 20. RESPONSIVE — Landscape phones ===== */
+@media (orientation: landscape) and (max-height: 500px) {
+    #hero { height: auto; min-height: 100vh; padding: 80px 5% 40px; }
+    .hero-name { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+    .hero-subtitle { margin-bottom: 16px; }
+    .hero-cta { gap: 10px; }
+    section { padding: 60px 5%; }
 }
