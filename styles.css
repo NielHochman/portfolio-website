@@ -7,8 +7,8 @@
 
 /* ===== 1. CSS CUSTOM PROPERTIES ===== */
 :root {
-    --bg-primary: rgba(10, 10, 26, 0.85);
-    --bg-secondary: rgba(15, 15, 42, 0.85);
+    --bg-primary: rgba(10, 10, 26, 0.6);
+    --bg-secondary: rgba(15, 15, 42, 0.6);
     --color-primary: #7b2ff7;
     --color-accent: #00d4ff;
     --color-glow: #4ecdc4;
