@@ -18,14 +18,13 @@ function initParticleCanvas() {
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
-  const parent = canvas.parentElement;
   const colors = ['#7b2ff7', '#00d4ff', '#4ecdc4'];
   let particles = [];
   let animId;
 
   const resize = () => {
-    canvas.width = parent.offsetWidth;
-    canvas.height = parent.offsetHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   };
   resize();
 
