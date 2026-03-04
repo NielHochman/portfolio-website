@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simba Artwork - Niel Hochman Portfolio</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0a0a1a;
+            color: #e0e0ff;
+            font-family: 'Poppins', sans-serif;
+        }
+        .project-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 20px 50px;
+        }
+        .project-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .project-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            background: linear-gradient(135deg, #7b2ff7, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .project-subtitle {
+            font-size: 1.2rem;
+            color: #8888aa;
+            margin-bottom: 30px;
+        }
+        .project-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .project-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        .project-description {
+            margin-bottom: 30px;
+            line-height: 1.8;
+            color: #e0e0ff;
+        }
+        .project-description h2 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        .project-meta {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            border-left: 3px solid #7b2ff7;
+            padding: 24px;
+        }
+        .meta-item {
+            margin-bottom: 15px;
+        }
+        .meta-title {
+            font-weight: 600;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+        .meta-item ul {
+            list-style: none;
+            padding: 0;
+        }
+        .meta-item ul li {
+            padding: 4px 0;
+            color: #e0e0ff;
+        }
+        .meta-item ul li::before {
+            content: '▹ ';
+            color: #7b2ff7;
+        }
+        .project-showcase {
+            flex: 2;
+            min-width: 300px;
+        }
+        .main-image {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+        .tools-used {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .tool-tag {
+            background: rgba(123, 47, 247, 0.2);
+            border: 1px solid rgba(123, 47, 247, 0.3);
+            color: #e0e0ff;
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e0e0ff;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .back-button:hover {
+            border-color: #7b2ff7;
+            box-shadow: 0 0 20px rgba(123, 47, 247, 0.4);
+            transform: translateY(-3px);
+        }
+        @media (max-width: 768px) {
+            .project-details {
+                flex-direction: column;
+            }
+            .project-showcase, .project-info {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="logo-text">NH</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html#hero" class="nav-link">Home</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+                <li><a href="../index.html#games" class="nav-link">Games</a></li>
+                <li><a href="../index.html#projects" class="nav-link active">Projects</a></li>
+                <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="project-container">
+            <div class="project-header">
+                <h1 class="project-title">Simba</h1>
+                <p class="project-subtitle">2D Character Artwork</p>
+            </div>
+            
+            <div class="project-details">
+                <div class="project-showcase">
+                    <img src="image0 (1).jpeg" alt="Simba Artwork" class="main-image simba-image">
+                </div>
+                
+                <div class="project-info">
+                    <div class="project-description">
+                        <h2>About This Project</h2>
+                        <p>This 2D artwork of Simba from Disney's "The Lion King" showcases my passion for character illustration and my ability to capture the essence of beloved characters. I focused on creating a dynamic pose that highlights Simba's playful yet majestic nature.</p>
+                        <p>The illustration combines traditional drawing techniques with digital coloring to achieve a vibrant, expressive result. I paid special attention to the character's facial expression and the flow of the mane to convey movement and personality.</p>
+                    </div>
+                    
+                    <div class="project-meta">
+                        <div class="meta-item">
+                            <div class="meta-title">Project Type</div>
+                            <div>2D Character Artwork</div>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <div class="meta-title">Tools Used</div>
+                            <div class="tools-used">
+                                <span class="tool-tag">Procreate</span>
+                                <span class="tool-tag">Photoshop</span>
+                                <span class="tool-tag">Traditional Sketching</span>
+                            </div>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <div class="meta-title">Key Features</div>
+                            <ul>
+                                <li>Character expression and personality</li>
+                                <li>Dynamic pose and composition</li>
+                                <li>Vibrant color palette</li>
+                                <li>Attention to anatomical details</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <a href="../index.html#projects" class="back-button">
+                        <i class="fas fa-arrow-left"></i> Back to Portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Niel Hochman. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html> 

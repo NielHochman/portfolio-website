@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Under The Sea</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           TASK 5: THEMED CSS — "Under The Sea" ocean aesthetic
+           Responsive for mobile, bubbly fonts, vibrant underwater palette
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: linear-gradient(180deg, #0a1628 0%, #0d2847 30%, #0f3460 60%, #1a5276 100%);
+            font-family: 'Fredoka', 'Trebuchet MS', sans-serif;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 400px;
+            max-width: 100vw;
+            aspect-ratio: 2 / 3;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 16px;
+            box-shadow:
+                0 0 30px rgba(0, 180, 255, 0.3),
+                0 0 60px rgba(0, 100, 200, 0.15);
+        }
+
+        /* ---- Loading Screen ---- */
+        #loading-screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(180deg, #0a1628 0%, #0d2847 50%, #1a5276 100%);
+            border-radius: 16px;
+            z-index: 100;
+        }
+
+        #loading-screen h1 {
+            font-size: 28px;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        #loading-screen p {
+            font-size: 14px;
+            color: #7ec8e3;
+            margin-bottom: 30px;
+        }
+
+        .loading-bar-bg {
+            width: 70%;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00b4d8, #48cae4, #90e0ef);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+        }
+
+        #loading-text {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #5ba3c9;
+        }
+
+        /* HUD is now canvas-based — see drawHUD() */
+
+        /* ---- Overlay Screens (Game Over / Win) ---- */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(5, 15, 40, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            z-index: 50;
+        }
+
+        .overlay.active {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .overlay h2 {
+            font-size: 34px;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .overlay .subtitle {
+            font-size: 15px;
+            color: #7ec8e3;
+            margin-bottom: 20px;
+        }
+
+        .overlay .score {
+            font-size: 20px;
+            color: #ffd700;
+            margin-bottom: 24px;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+        }
+
+        #game-over h2 {
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.5), 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .game-btn {
+            padding: 13px 34px;
+            font-size: 17px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #00b4d8, #0077b6);
+            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4), 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .game-btn:hover  { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,180,216,0.6); }
+        .game-btn:active { transform: scale(0.95); }
+
+        /* ---- Touch Hint ---- */
+        #touch-hint {
+            position: absolute;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.35);
+            font-size: 13px;
+            pointer-events: none;
+            z-index: 5;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.35; }
+            50%      { opacity: 0.75; }
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 420px) {
+            #game-container { width: 100vw; }
+            canvas, .overlay, #loading-screen { border-radius: 0; }
+        }
+
+        @media (max-height: 660px) {
+            #game-container { height: 100vh; height: 100dvh; width: auto; aspect-ratio: 2 / 3; }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Loading Screen -->
+        <div id="loading-screen">
+            <h1>UNDER THE SEA</h1>
+            <p>Dive into adventure...</p>
+            <div class="loading-bar-bg">
+                <div class="loading-bar-fill" id="loading-bar"></div>
+            </div>
+            <div id="loading-text">Loading assets...</div>
+        </div>
+
+        <!-- Canvas -->
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+        <!-- HUD is now drawn on canvas via drawHUD() -->
+
+        <!-- Game Over -->
+        <div id="game-over" class="overlay">
+            <h2>Oh No!</h2>
+            <p class="subtitle">The sea was too dangerous...</p>
+            <p class="score" id="gameover-score"></p>
+            <button class="game-btn" id="restart-button">Dive Again</button>
+        </div>
+
+        <!-- Win -->
+        <!-- Touch hint (mobile) -->
+        <div id="touch-hint">← Tap sides to move →</div>
+    </div>
+
+<script>
+// ================================================================
+//  TASK 1 — IMAGE LOADER
+//  Promise-based loader with progress bar.  The game waits until
+//  every asset resolves before calling initGame().
+// ================================================================
+
+const ASSET_MANIFEST = {
+    // Backgrounds
+    bg_back    : 'assets_opt/bg_back.png',       // 800×1200 — deep-water backdrop
+    reef       : 'assets_opt/reef.png',           // 233×350 — coral reef (bottom-right)
+    // Player sprites (3-frame swim + hit reaction) — 2× res for crisp rendering
+    fish_mid   : 'assets_opt/fish_mid.png',       // 240×155 — neutral pose
+    fish_up    : 'assets_opt/fish_up.png',        // 240×181 — tail up
+    fish_down  : 'assets_opt/fish_down.png',      // 240×182 — tail down
+    fish_hit   : 'assets_opt/fish_hit.png',       // 251×240 — hit reaction pose
+    // Collectibles & hazards
+    coin       : 'assets_opt/coin.png',           // 200×199 — gold star coin
+    gem        : 'assets_opt/gem.png',            // 185×200 — purple gem (with glow FX)
+    mine       : 'assets_opt/mine.png',           // 165×200 — spiked sea mine
+    // Special events
+    anchor     : 'assets_opt/anchor.png',         // 100×140 — slow-falling anchor
+    // HUD elements
+    coin_ui    : 'assets_opt/coin_ui.png',        // 475×235 — coin score banner
+    gem_ui     : 'assets_opt/gem_ui.png',         // 475×236 — gem score banner
+    heart      : 'assets_opt/heart.png',          // 100×86  — life heart icon
+    // Title screen
+    title_bg   : 'assets_opt/title_bg.jpg',       // 800×1200 — "Under The Sea" splash
+    play_btn   : 'assets_opt/play_btn.png',       // 200×199 — play button icon
+    // Game Over screen
+    gameover_panel: 'assets_opt/gameover_panel.png', // 400×605 — gold-framed GAME OVER panel
+    restart_btn   : 'assets_opt/restart_btn.png',    // 200×72  — gold RESTART button
+    // Victory screen
+    victory_panel : 'assets_opt/victory_panel.png'   // 400×650 — gold-framed VICTORY panel
+};
+
+const images = {};
+
+function loadAllAssets() {
+    return new Promise((resolve, reject) => {
+        const keys    = Object.keys(ASSET_MANIFEST);
+        const total   = keys.length;
+        let   loaded  = 0;
+        let   failed  = 0;
+        const bar     = document.getElementById('loading-bar');
+        const txt     = document.getElementById('loading-text');
+
+        keys.forEach(key => {
+            const img  = new Image();
+            img.onload = () => {
+                loaded++;
+                console.log('[Loader] ✓ ' + key + ' loaded (' + img.naturalWidth + '×' + img.naturalHeight + ')');
+                const pct = Math.round((loaded / total) * 100);
+                bar.style.width  = pct + '%';
+                txt.textContent  = 'Loading: ' + key + ' (' + loaded + '/' + total + ')';
+                if (loaded + failed === total) {
+                    if (failed > 0) {
+                        txt.textContent = 'Error: ' + failed + ' asset(s) failed!';
+                        reject(new Error(failed + ' assets failed to load'));
+                    } else {
+                        txt.textContent = 'Ready!';
+                        setTimeout(resolve, 350);
+                    }
+                }
+            };
+            img.onerror = () => {
+                failed++;
+                console.error('[Loader] ✗ FAILED: ' + key + ' (' + ASSET_MANIFEST[key] + ')');
+                txt.textContent = 'Failed: ' + key;
+                if (loaded + failed === total) {
+                    txt.textContent = 'Error: ' + failed + ' asset(s) failed!';
+                    reject(new Error(failed + ' assets failed to load'));
+                }
+            };
+            img.src     = ASSET_MANIFEST[key];
+            images[key] = img;
+        });
+    });
+}
+
+// ================================================================
+//  CONSTANTS & CONFIG
+// ================================================================
+
+const canvas = document.getElementById('gameCanvas');
+const ctx    = canvas.getContext('2d');
+
+// ================================================================
+//  AUDIO SYSTEM
+//  Background music: loops continuously from title screen onward,
+//  skips first 4 seconds of the track on every play/loop.
+//  SFX: coin and gem collect sounds, played via playSFX() helper
+//  which resets currentTime for rapid re-triggering.
+//  Browser autoplay policy is handled via an unlock listener in
+//  the bootstrap section (click/touchstart fallback).
+// ================================================================
+
+const bgMusic = new Audio('Sounds/UnderTheSea_bg_sound.mp3');
+bgMusic.loop = true;
+bgMusic.volume = 0.4;
+
+const sfxCoin = new Audio('Sounds/Coin_collect.mp3');
+sfxCoin.volume = 0.6;
+const sfxGem = new Audio('Sounds/Gem_collect.mp3');
+sfxGem.volume = 0.6;
+const sfxHit = new Audio('Sounds/Hitsound.wav');
+sfxHit.volume = 0.7;
+
+function playSFX(audio) {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+}
+
+// ================================================================
+//  HIGH-DPI CANVAS SUPPORT
+//  Scales the canvas backing store by devicePixelRatio for crisp
+//  rendering on Retina/HiDPI displays. All game code uses logical
+//  coordinates (W=400, H=600) — the DPR transform is transparent.
+//  Re-applies automatically on window resize / monitor change.
+// ================================================================
+
+const W = 400;   // logical width  (game coordinates)
+const H = 600;   // logical height (game coordinates)
+
+let dpr = window.devicePixelRatio || 1;
+
+function applyDPR() {
+    dpr = window.devicePixelRatio || 1;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+}
+applyDPR();
+window.addEventListener('resize', applyDPR);
+
+// ================================================================
+//  GAME STATE MANAGEMENT
+//  gameState controls which screen is active:
+//    'TITLE'   — title screen with play button (no game logic runs)
+//    'PLAYING' — full game loop (parallax, fish, objects, HUD)
+//  Transitions: TITLE → PLAYING (play button click/tap)
+//               PLAYING → TITLE (game over/win → Dive Again)
+// ================================================================
+
+let gameState = 'TITLE';
+
+// Play button — centered horizontally, 82% down the screen
+const PLAY_BTN = {
+    w: 90, h: 90,
+    x: 0, y: 0
+};
+PLAY_BTN.x = Math.floor(W / 2 - PLAY_BTN.w / 2);
+PLAY_BTN.y = Math.floor(H * 0.82 - PLAY_BTN.h / 2);
+
+// Game Over panel — canvas-drawn replacement for #game-over HTML overlay
+// Panel asset is 400×605; drawn centered with room for restart button below.
+// Two dark bars on the panel serve as score text fields at ~56% and ~70% height.
+const GO_PANEL = {
+    w: 300, h: 0,
+    x: 0, y: 0,
+    btnW: 140, btnH: 50,
+    btnX: 0, btnY: 0,
+    text1Y: 0.485,    // first dark bar center — coin score
+    text2Y: 0.595,    // second dark bar center — gem score
+    btnPosY: 0.79,    // restart button center (empty area inside panel bottom)
+};
+GO_PANEL.h = Math.round(GO_PANEL.w * (605 / 400));       // ≈ 454
+GO_PANEL.x = Math.floor((W - GO_PANEL.w) / 2);
+GO_PANEL.y = Math.floor((H - GO_PANEL.h) / 2);           // vertically centered
+GO_PANEL.btnX = Math.floor((W - GO_PANEL.btnW) / 2);
+GO_PANEL.btnY = Math.floor(GO_PANEL.y + GO_PANEL.h * GO_PANEL.btnPosY - GO_PANEL.btnH / 2);
+
+// Victory panel — same layout approach as GO_PANEL
+const WIN_PANEL = {
+    w: 300, h: 0,
+    x: 0, y: 0,
+    btnW: 140, btnH: 50,
+    btnX: 0, btnY: 0,
+    text1Y: 0.485,    // first dark bar — coin score
+    text2Y: 0.595,    // second dark bar — gem score
+    btnPosY: 0.79,    // restart button inside panel bottom
+};
+WIN_PANEL.h = Math.round(WIN_PANEL.w * (650 / 400));      // ≈ 488
+WIN_PANEL.x = Math.floor((W - WIN_PANEL.w) / 2);
+WIN_PANEL.y = Math.floor((H - WIN_PANEL.h) / 2);
+WIN_PANEL.btnX = Math.floor((W - WIN_PANEL.btnW) / 2);
+WIN_PANEL.btnY = Math.floor(WIN_PANEL.y + WIN_PANEL.h * WIN_PANEL.btnPosY - WIN_PANEL.btnH / 2);
+
+const CFG = {
+    lanes       : 5,
+    laneW       : W / 5,                        // 80
+    playerW     : 70,                            // fish draw width (smaller, hi-res source)
+    playerH     : 45,                            // proportional to 240×155 sprite
+    objectW     : 22,                            // collectible draw size
+    objectH     : 22,                            // square — new coin/gem assets are circular
+    playerBaseY : H - 75,                        // fish center Y
+    spawnRate   : 0.025,                         // per-frame probability
+    winScore    : 100,
+    startLives  : 3,
+
+    // Task 3 – animation tuning
+    bobAmp      : 5,                             // sine amplitude px
+    bobFreq     : 0.004,                         // sine frequency
+    lerpSpeed   : 0.14,                          // movement smoothing
+    frameDur    : 150,                            // ms per swim frame
+
+    // Task 2 – parallax (back static, reef static)
+    bgMidSpd    : 0.8,
+
+    // Task 4 – particles
+    burstCount  : 12,
+    squashFrames: 14,                            // recovery duration
+};
+
+// Object types — each has its own draw size (w/h), sprite key, score
+// value, and particle color. Mine is larger to match its portrait sprite.
+// Gems have a pulsing purple glow effect (see drawObjects).
+const TYPES = {
+    COIN : { value: 1,  img: 'coin', pColor: '#ffd700', w: 26, h: 26 },
+    GEM  : { value: 10, img: 'gem',  pColor: '#c77dff', w: 26, h: 26 },
+    MINE : { value: 0,  img: 'mine', pColor: '#ff6b6b', w: 38, h: 39 }
+};
+
+// ================================================================
+//  GAME STATE  (reset every initGame)
+// ================================================================
+
+const S = {
+    running     : false,
+    coins       : 0,
+    gems        : 0,
+    lives       : 3,
+    lane        : 2,                // target lane
+    visX        : 0,                // lerped X
+    faceRight   : true,
+    time        : 0,                // ms elapsed
+    lastTS      : 0,                // previous rAF timestamp
+
+    // swim cycle
+    frames      : [],               // set after load
+    frameIdx    : 0,
+    frameTmr    : 0,
+
+    // parallax offsets
+    bgMidY      : 0,
+
+    // squash / stretch
+    sqX         : 1,
+    sqY         : 1,
+
+    objects     : [],               // falling objects
+    particles   : [],               // particle FX
+    bubbles     : [],               // ambient bubbles
+
+    // Game Juice state
+    tailBubbles : [],               // bubble trail from fish tail
+    _tailTmr    : 0,                // tail bubble spawn timer
+    shakeTime   : 0,                // screen shake frames remaining
+    shakeIntensity: 0,              // screen shake current magnitude
+    glowTimer   : 0,                // coin collect glow (frames, counts down)
+    hitGlowTimer: 0,                // damage red flash (frames, counts down)
+    scorePop    : 0,                // score bounce (1→0 decay)
+    frenzy      : false,            // frenzy mode active
+    frenzyTimer : 0,                // frenzy frames remaining
+    collectTimes: [],               // timestamps of recent collects
+
+    // Canvas HUD state
+    coinPop     : 0,                // coin banner pop scale (1→0 decay)
+    gemPop      : 0,                // gem banner pop scale
+    heartAnims  : [],               // active heart-loss animations
+    displayCoins: 0,                // animated display counter (lerps toward S.coins)
+    displayGems : 0,                // animated display counter (lerps toward S.gems)
+
+    // Special one-time events
+    hasAnchorSpawned   : false,     // true after anchor has been created
+    anchor             : null,      // active anchor object or null
+
+    // Canvas Game Over panel state
+    showGameOver       : false,     // true when canvas game-over panel is visible
+    gameOverAlpha      : 0,         // fade-in alpha (0→1)
+
+    // Canvas Victory panel state
+    showVictory        : false,     // true when canvas victory panel is visible
+    victoryAlpha       : 0,         // fade-in alpha (0→1)
+};
+
+// ================================================================
+//  DOM REFERENCES
+// ================================================================
+
+const DOM = {
+    loading   : document.getElementById('loading-screen'),
+    over      : document.getElementById('game-over'),
+    restartBtn: document.getElementById('restart-button'),
+    overScore : document.getElementById('gameover-score'),
+    touchHint : document.getElementById('touch-hint'),
+};
+
+// ================================================================
+//  TASK 2 — PARALLAX BACKGROUND SYSTEM
+//  Standard "Seamless Double-Draw" vertical scroll.
+//  Back layer is static.  Mid & front each have a yOffset that
+//  increments every frame, wraps via modulo, and the image is
+//  drawn TWICE (at yOffset and yOffset − canvasHeight) so there
+//  is never a gap.
+// ================================================================
+
+function updateParallax() {
+    // Both layers are static — no scrolling needed
+}
+
+let _parallaxDiag = false;
+function drawParallax() {
+    // Layer 1 — static deep-water background
+    ctx.drawImage(images.bg_back, 0, 0, W, H);
+
+    // Layer 2 — static mid-ground: reef (bottom-right, blended)
+    const reefW = 150, reefH = 225;
+    const reefX = W - reefW + 30, reefY = H - reefH + 20;
+    ctx.save();
+    ctx.globalAlpha = 0.55;
+    ctx.drawImage(images.reef, reefX, reefY, reefW, reefH);
+    ctx.restore();
+
+    // Diagnostic: fires once to confirm layers rendered
+    if (!_parallaxDiag) {
+        _parallaxDiag = true;
+        console.log('[Parallax] Layer 1 (back):  STATIC');
+        console.log('[Parallax] Layer 2 (reef):  STATIC');
+        console.log('[Parallax] Canvas: ' + W + '×' + H + '  smoothing=' + ctx.imageSmoothingEnabled);
+    }
+}
+
+// ================================================================
+//  TASK 4a — PARTICLE SYSTEM
+//  Burst of bubbles + sparkles on collection / hit.
+//  Each particle: pos, vel, life (1→0), size, color, type.
+// ================================================================
+
+function spawnParticles(x, y, color, count) {
+    for (let i = 0; i < (count || CFG.burstCount); i++) {
+        S.particles.push({
+            x: x, y: y,
+            vx: (Math.random() - 0.5) * 5,
+            vy: (Math.random() - 0.5) * 5 - 1.5,
+            life  : 1.0,
+            decay : 0.018 + Math.random() * 0.022,
+            size  : 2.5 + Math.random() * 5.5,
+            color : color,
+            bubble: Math.random() > 0.5           // half bubbles, half sparkles
+        });
+    }
+}
+
+function updateParticles() {
+    for (let i = S.particles.length - 1; i >= 0; i--) {
+        const p = S.particles[i];
+        p.x    += p.vx;
+        p.y    += p.vy;
+        p.vy   += p.bubble ? -0.04 : 0.07;       // bubbles float, sparkles fall
+        p.vx   *= 0.98;
+        p.life -= p.decay;
+        if (p.life <= 0) S.particles.splice(i, 1);
+    }
+}
+
+function drawParticles() {
+    for (const p of S.particles) {
+        ctx.globalAlpha = Math.max(0, p.life);
+        const sz = p.size * p.life;
+
+        if (p.bubble) {
+            // Hollow bubble with highlight
+            ctx.strokeStyle = p.color;
+            ctx.lineWidth   = 1.5;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, sz, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(255,255,255,0.35)';
+            ctx.beginPath();
+            ctx.arc(p.x - sz * 0.3, p.y - sz * 0.3, sz * 0.22, 0, Math.PI * 2);
+            ctx.fill();
+        } else {
+            // 4-point sparkle star
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            const s = sz;
+            ctx.moveTo(p.x, p.y - s);
+            ctx.lineTo(p.x + s * 0.3, p.y - s * 0.3);
+            ctx.lineTo(p.x + s, p.y);
+            ctx.lineTo(p.x + s * 0.3, p.y + s * 0.3);
+            ctx.lineTo(p.x, p.y + s);
+            ctx.lineTo(p.x - s * 0.3, p.y + s * 0.3);
+            ctx.lineTo(p.x - s, p.y);
+            ctx.lineTo(p.x - s * 0.3, p.y - s * 0.3);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+    ctx.globalAlpha = 1;
+}
+
+// ================================================================
+//  AMBIENT BUBBLES — slow-rising background atmosphere
+// ================================================================
+
+function initBubbles() {
+    S.bubbles = [];
+    for (let i = 0; i < 18; i++) S.bubbles.push(makeBubble(true));
+}
+
+function makeBubble(randomY) {
+    return {
+        x     : Math.random() * W,
+        y     : randomY ? Math.random() * H : H + 10,
+        r     : 1 + Math.random() * 3.5,
+        spd   : 0.25 + Math.random() * 0.7,
+        phase : Math.random() * Math.PI * 2,
+        wobble: 0.01 + Math.random() * 0.015,
+        alpha : 0.08 + Math.random() * 0.22
+    };
+}
+
+function updateBubbles() {
+    for (let i = 0; i < S.bubbles.length; i++) {
+        const b = S.bubbles[i];
+        b.y -= b.spd;
+        b.x += Math.sin(b.phase) * 0.3;
+        b.phase += b.wobble;
+        if (b.y < -10) S.bubbles[i] = makeBubble(false);
+    }
+}
+
+function drawBubbles() {
+    for (const b of S.bubbles) {
+        ctx.globalAlpha = b.alpha;
+        ctx.strokeStyle = 'rgba(180,230,255,0.7)';
+        ctx.lineWidth   = 1;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.stroke();
+        // tiny highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.beginPath();
+        ctx.arc(b.x - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+}
+
+// ================================================================
+//  GAME JUICE — BUBBLE TRAIL
+//  Fish emits small bubbles from tail; float up and fade out.
+// ================================================================
+
+function updateTailBubbles() {
+    for (let i = S.tailBubbles.length - 1; i >= 0; i--) {
+        const b = S.tailBubbles[i];
+        b.x     += b.vx + Math.sin(b.phase) * 0.2;
+        b.y     += b.vy;
+        b.phase += 0.06;
+        b.alpha -= 0.007;
+        if (b.alpha <= 0) S.tailBubbles.splice(i, 1);
+    }
+}
+
+function drawTailBubbles() {
+    for (const b of S.tailBubbles) {
+        ctx.globalAlpha = Math.max(0, b.alpha);
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth   = 1;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.stroke();
+        // tiny highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.beginPath();
+        ctx.arc(b.x - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+}
+
+// ================================================================
+//  GAME JUICE — FRENZY MODE + GOD RAYS
+//  Collect 3+ coins within 2 seconds → frenzy activates.
+//  God rays: diagonal gradient overlays that pulse; intensify in frenzy.
+// ================================================================
+
+function updateFrenzy() {
+    // Prune collect timestamps older than 2 seconds
+    const cutoff = S.time - 2000;
+    S.collectTimes = S.collectTimes.filter(t => t > cutoff);
+
+    // Activate frenzy if 3+ recent collects
+    if (S.collectTimes.length >= 3 && !S.frenzy) {
+        S.frenzy      = true;
+        S.frenzyTimer = 120;   // ~2 seconds at 60fps
+    }
+
+    if (S.frenzy) {
+        S.frenzyTimer--;
+        if (S.frenzyTimer <= 0) S.frenzy = false;
+    }
+}
+
+function drawGodRays() {
+    const speed     = S.frenzy ? 0.010 : 0.003;
+    const alphaBase = S.frenzy ? 0.09  : 0.035;
+    const r = S.frenzy ? 255 : 220;
+    const g = S.frenzy ? 225 : 240;
+    const b = S.frenzy ? 120 : 255;
+
+    // Soft tapered light shafts — wide at top, narrow at bottom
+    const rays = [
+        { x: W * 0.18, topW: 90, botW: 30, drift: 0.0 },
+        { x: W * 0.45, topW: 110, botW: 40, drift: 1.8 },
+        { x: W * 0.72, topW: 80,  botW: 25, drift: 3.6 },
+    ];
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < rays.length; i++) {
+        const ray   = rays[i];
+        const phase = S.time * speed + ray.drift;
+        const alpha = alphaBase + Math.sin(phase) * alphaBase * 0.5;
+        const sway  = Math.sin(S.time * 0.001 + i) * 8;
+
+        // Trapezoid path: wide top, narrow bottom
+        ctx.beginPath();
+        ctx.moveTo(ray.x - ray.topW / 2 + sway, 0);
+        ctx.lineTo(ray.x + ray.topW / 2 + sway, 0);
+        ctx.lineTo(ray.x + ray.botW / 2 + sway * 0.3, H * 0.85);
+        ctx.lineTo(ray.x - ray.botW / 2 + sway * 0.3, H * 0.85);
+        ctx.closePath();
+
+        const grad = ctx.createLinearGradient(0, 0, 0, H * 0.85);
+        grad.addColorStop(0,   'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')');
+        grad.addColorStop(0.4, 'rgba(' + r + ',' + g + ',' + b + ',' + (alpha * 0.5) + ')');
+        grad.addColorStop(1,   'rgba(' + r + ',' + g + ',' + b + ',0)');
+
+        ctx.fillStyle = grad;
+        ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.restore();
+}
+
+// ================================================================
+//  SPECIAL EVENTS — One-time decorative encounters
+//  Anchor: slow vertical drop with trailing bubbles (20-40s)
+//  Fires once per session via boolean flag.
+// ================================================================
+
+function updateSpecialEvents(dt) {
+    // ---- Anchor spawn check ----
+    if (!S.hasAnchorSpawned && S.time > 20000) {
+        // ~0.3% per frame after 20s; guaranteed by 40s
+        if (Math.random() < 0.003 || S.time > 40000) {
+            S.hasAnchorSpawned = true;
+            const ancW = 65, ancH = 90;
+            S.anchor = {
+                x: 40 + Math.random() * (W - 80),
+                y: -ancH,
+                w: ancW,
+                h: ancH,
+                vy: 0.8,
+                bubbleTmr: 0
+            };
+            console.log('[Event] Anchor spawned at x=' + S.anchor.x.toFixed(0));
+        }
+    }
+
+    // ---- Update anchor ----
+    if (S.anchor) {
+        const a = S.anchor;
+        a.y += a.vy;
+
+        // Emit small rising bubbles every ~8 frames
+        a.bubbleTmr++;
+        if (a.bubbleTmr >= 8) {
+            a.bubbleTmr = 0;
+            S.particles.push({
+                x: a.x + a.w / 2 + (Math.random() - 0.5) * 20,
+                y: a.y,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: -1.2 - Math.random() * 0.8,
+                life  : 1.0,
+                decay : 0.015 + Math.random() * 0.01,
+                size  : 2 + Math.random() * 3,
+                color : 'rgba(180,230,255,0.7)',
+                bubble: true
+            });
+        }
+
+        // Off bottom edge → remove
+        if (a.y > H + a.h) {
+            S.anchor = null;
+            console.log('[Event] Anchor exited');
+        }
+    }
+
+}
+
+function drawSpecialEvents() {
+    // ---- Draw anchor ----
+    if (S.anchor) {
+        const a = S.anchor;
+        ctx.drawImage(images.anchor, a.x, a.y, a.w, a.h);
+    }
+}
+
+// ================================================================
+//  TASK 3 — FISH CHARACTER ANIMATION
+//  a) Idle bob  — y = A · sin(B · time)
+//  b) Swim loop — mid → up → mid → down  (tail wag)
+//  c) Lerp      — smooth lane transitions
+//  d) Flip      — ctx.scale(-1,1) when moving left
+//  + Task 4c    — squash & stretch on collision
+// ================================================================
+
+function initFishAnim() {
+    S.frames   = [images.fish_mid, images.fish_up, images.fish_mid, images.fish_down];
+    S.frameIdx = 0;
+    S.frameTmr = 0;
+}
+
+function updateFish(dt) {
+    // b) Swim frame cycling
+    S.frameTmr += dt;
+    if (S.frameTmr >= CFG.frameDur) {
+        S.frameTmr -= CFG.frameDur;
+        S.frameIdx  = (S.frameIdx + 1) % S.frames.length;
+    }
+
+    // c) Lerp visual X toward target lane centre
+    const targetX = S.lane * CFG.laneW + CFG.laneW / 2;
+    S.visX += (targetX - S.visX) * CFG.lerpSpeed;
+
+    // Hit reaction countdown
+    if (S.hitTimer > 0) S.hitTimer -= dt;
+
+    // Squash / stretch spring-back (lerp toward 1)
+    S.sqX += (1 - S.sqX) * 0.14;
+    S.sqY += (1 - S.sqY) * 0.14;
+
+    // Bubble trail — emit from tail every ~4 frames
+    S._tailTmr += dt;
+    if (S._tailTmr >= 66) {
+        S._tailTmr = 0;
+        const bob  = CFG.bobAmp * Math.sin(S.time * CFG.bobFreq);
+        const tailX = S.visX + (S.faceRight ? -1 : 1) * CFG.playerW * 0.4;
+        S.tailBubbles.push({
+            x: tailX,
+            y: CFG.playerBaseY + bob,
+            r: 1.5 + Math.random() * 1.5,
+            vy: -0.5 - Math.random() * 0.8,
+            vx: (Math.random() - 0.5) * 0.6,
+            alpha: 0.4,
+            phase: Math.random() * Math.PI * 2
+        });
+    }
+}
+
+function triggerSquash(kind) {
+    if (kind === 'collect') { S.sqX = 1.35; S.sqY = 0.7; }
+    else                    { S.sqX = 0.7;  S.sqY = 1.35; }
+}
+
+// ---- Screen Shake ----
+function shake(duration, intensity) {
+    S.shakeTime      = duration;
+    S.shakeIntensity = intensity;
+}
+
+function drawFish() {
+    // a) Idle sine-wave bob
+    const bob = CFG.bobAmp * Math.sin(S.time * CFG.bobFreq);
+    const cx  = S.visX;
+    const cy  = CFG.playerBaseY + bob;
+    const frame = S.hitTimer > 0 ? images.fish_hit : S.frames[S.frameIdx];
+
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // Task 4c — squash & stretch
+    ctx.scale(S.sqX, S.sqY);
+
+    // d) Fixed inverted sprite flipping logic for correct directional movement.
+    //    The source sprite (fish_mid.png) faces LEFT by default.
+    //    Flip horizontally when moving RIGHT (higher lane index).
+    //    ctx.translate already centres the fish, so the flip pivots correctly.
+    if (S.faceRight) ctx.scale(-1, 1);
+
+    // Draw fish — red hit glow takes priority over yellow coin glow
+    if (S.hitGlowTimer > 0) {
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = 'red';
+        ctx.filter = 'drop-shadow(0 0 10px red) brightness(1.2) sepia(1) hue-rotate(-50deg)';
+        ctx.drawImage(frame, -CFG.playerW / 2, -CFG.playerH / 2, CFG.playerW, CFG.playerH);
+        ctx.filter = 'none';
+        ctx.shadowBlur = 0;
+        S.hitGlowTimer--;
+    } else if (S.glowTimer > 0) {
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#ffd700';
+        ctx.filter = 'brightness(1.5)';
+        ctx.drawImage(frame, -CFG.playerW / 2, -CFG.playerH / 2, CFG.playerW, CFG.playerH);
+        ctx.filter = 'none';
+        ctx.shadowBlur = 0;
+        S.glowTimer--;
+    } else {
+        ctx.drawImage(frame, -CFG.playerW / 2, -CFG.playerH / 2, CFG.playerW, CFG.playerH);
+    }
+    ctx.restore();
+}
+
+// ================================================================
+//  TASK 4b — FALLING OBJECTS  (sprites + rotation)
+// ================================================================
+
+function spawnObject() {
+    if (!S.running) return;
+    const lane = Math.floor(Math.random() * CFG.lanes);
+    const r    = Math.random();
+    let type;
+    if      (r < 0.15) type = TYPES.GEM;
+    else if (r < 0.60) type = TYPES.COIN;
+    else               type = TYPES.MINE;
+
+    S.objects.push({
+        lane : lane,
+        y    : -CFG.objectH,
+        type : type,
+        speed: 2 + Math.random() * 2,
+        rot  : 0,
+        rotV : (Math.random() - 0.5) * 0.04,
+        phase: Math.random() * Math.PI * 2
+    });
+}
+
+function updateObjects() {
+    if (!S.running) return;
+
+    const bob    = CFG.bobAmp * Math.sin(S.time * CFG.bobFreq);
+    const fishY  = CFG.playerBaseY + bob;
+    const baseColDist = (CFG.playerW + CFG.objectW) * 0.30;
+
+    for (let i = S.objects.length - 1; i >= 0; i--) {
+        const o = S.objects[i];
+        o.y    += o.speed;
+        o.rot  += o.rotV;
+        o.phase += 0.05;
+
+        // Off screen?
+        if (o.y > H + CFG.objectH) { S.objects.splice(i, 1); continue; }
+
+        // Collision
+        const ox = o.lane * CFG.laneW + CFG.laneW / 2;
+        const dx = S.visX - ox;
+        const dy = fishY  - o.y;
+        const colDist = (CFG.playerW + o.type.w) * 0.30;
+        if (Math.sqrt(dx * dx + dy * dy) < colDist) {
+            if (o.type === TYPES.MINE) {
+                triggerHeartLoss(S.lives - 1);  // animate the heart about to be lost
+                S.lives--;
+                S.hitTimer = 400;  // show hit reaction for 400ms
+                S.hitGlowTimer = 20; // red flash for ~330ms
+                playSFX(sfxHit);
+                triggerSquash('hit');
+                shake(14, 6);
+                spawnParticles(ox, o.y, o.type.pColor, 8);
+                updateHUD();
+                if (S.lives <= 0) endGame(false);
+            } else {
+                S.coins += o.type.value;
+                S.glowTimer = 15;  // glow for ~250ms
+                if (o.type === TYPES.GEM) { S.gems++; S.gemPop = 1.0; S.coinPop = 1.0; playSFX(sfxGem); }
+                else { S.coinPop = 1.0; playSFX(sfxCoin); }
+                triggerSquash('collect');
+                S.collectTimes.push(S.time);
+                spawnParticles(ox, o.y, o.type.pColor, CFG.burstCount);
+                updateHUD();
+                if (S.coins >= CFG.winScore) endGame(true);
+            }
+            S.objects.splice(i, 1);
+        }
+    }
+
+    // Random spawns
+    if (Math.random() < CFG.spawnRate) spawnObject();
+}
+
+function drawObjects() {
+    for (const o of S.objects) {
+        const cx = o.lane * CFG.laneW + CFG.laneW / 2 + Math.sin(o.phase) * 2;
+        const img = images[o.type.img];
+
+        ctx.save();
+        ctx.translate(cx, o.y);
+        ctx.rotate(o.rot);
+        const ow = o.type.w, oh = o.type.h;
+        // Gem glow effect (3 layers):
+        //   1. Radial gradient halo behind the gem (purple, pulsing)
+        //   2. Canvas shadowBlur glow on the sprite itself
+        //   3. Three orbiting white sparkle dots
+        if (o.type === TYPES.GEM) {
+            const t = o.phase * 3;
+            const pulse = 0.5 + Math.sin(t) * 0.2;
+
+            // Soft radial glow behind the gem
+            const grad = ctx.createRadialGradient(0, 0, ow * 0.3, 0, 0, ow * 1.2);
+            grad.addColorStop(0, 'rgba(199,125,255,' + (0.35 + Math.sin(t) * 0.15).toFixed(2) + ')');
+            grad.addColorStop(1, 'rgba(199,125,255,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(0, 0, ow * 1.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Shadow glow on the gem itself
+            ctx.shadowColor = '#d9a0ff';
+            ctx.shadowBlur = 18 + Math.sin(t) * 6;
+            ctx.globalAlpha = pulse;
+            ctx.drawImage(img, -ow / 2, -oh / 2, ow, oh);
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+
+            // Tiny orbiting sparkles
+            for (let s = 0; s < 3; s++) {
+                const angle = t * 0.8 + s * (Math.PI * 2 / 3);
+                const dist = ow * 0.7 + Math.sin(t * 2 + s) * 3;
+                const sx = Math.cos(angle) * dist;
+                const sy = Math.sin(angle) * dist;
+                const sparkAlpha = 0.5 + Math.sin(t * 4 + s * 2) * 0.4;
+                ctx.globalAlpha = sparkAlpha;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+        ctx.drawImage(img, -ow / 2, -oh / 2, ow, oh);
+        ctx.restore();
+    }
+}
+
+// ================================================================
+//  CANVAS HUD
+//  All HUD elements drawn directly on canvas (no HTML overlays).
+//  Rendered AFTER ctx.restore() so it stays fixed to screen coords,
+//  unaffected by screen shake or viewport clipping.
+//
+//  Layout:
+//    - Coin banner (top-left) — shows coin count
+//    - Gem banner (centered between coin & hearts) — shows gem count
+//    - Heart icons (top-right) — shows remaining lives using heart.png
+//      Full opacity = alive, 25% opacity = lost
+//
+//  Effects:
+//    - Pop animation: banner scales to 1.12x on collect, decays via 0.85
+//    - Rolling counter: displayCoins/displayGems lerp toward real values
+//    - Both banners pop on gem collect (gems add 10 coins)
+//
+//  Text is center-aligned at 70% of banner width (past the baked-in
+//  icon and "X" mark in the banner assets).
+// ================================================================
+
+// HUD layout constants
+const HUD = {
+    coinX: 4,   coinY: 6,      // coin banner — top-left
+    gemX:  0,   gemY:  6,      // gem banner — centered between coin & hearts (set below)
+    bannerW: 130, bannerH: 64,  // draw size for banners (asset aspect ~2:1)
+    textOffX: 0.70,             // text center X — midpoint of the field area (past icon+X)
+    textOffY: 0.52,             // text center Y — vertically centered in field
+    heartR: 16,                 // heart icon base size
+    heartGap: 4,                // gap between hearts
+};
+// Hearts on the right side
+HUD.heartY = HUD.coinY + HUD.bannerH / 2;  // vertically centered with banners
+HUD.heartX = W - CFG.startLives * (HUD.heartR * 2.4 + HUD.heartGap) - 1;
+// Center gem banner between coin's right edge and hearts' left edge
+const coinRight = HUD.coinX + HUD.bannerW;
+const heartsLeft = HUD.heartX;
+HUD.gemX = Math.floor((coinRight + heartsLeft) / 2 - HUD.bannerW / 2);
+
+function updateHUD() {
+    // Pop triggers are set inline on collect (S.coinPop = 1, S.gemPop = 1)
+    // Rolling counters — lerp toward actual values
+    if (S.displayCoins < S.coins) {
+        S.displayCoins += Math.max(1, (S.coins - S.displayCoins) * 0.2);
+        if (S.displayCoins > S.coins) S.displayCoins = S.coins;
+    }
+    if (S.displayGems < S.gems) {
+        S.displayGems += Math.max(1, (S.gems - S.displayGems) * 0.2);
+        if (S.displayGems > S.gems) S.displayGems = S.gems;
+    }
+
+    // Pop decay
+    S.coinPop *= 0.85;
+    if (S.coinPop < 0.01) S.coinPop = 0;
+    S.gemPop *= 0.85;
+    if (S.gemPop < 0.01) S.gemPop = 0;
+}
+
+// Heart loss animation — pop, flash red, spin & shrink away with particles
+function triggerHeartLoss(idx) {
+    const heartW = HUD.heartR * 2.4;
+    const heartH = heartW * 0.86;
+    const hx = HUD.heartX + idx * (heartW + HUD.heartGap) + heartW / 2;
+    const hy = HUD.heartY;
+
+    S.heartAnims.push({
+        idx,
+        x: hx, y: hy,
+        scale: 1.0,
+        rot: 0,
+        alpha: 1.0,
+        phase: 0,       // 0→1 animation progress
+        flash: 1.0,     // red flash intensity
+    });
+
+    // Spawn heart-break particles at the heart position
+    for (let i = 0; i < 8; i++) {
+        S.particles.push({
+            x: hx, y: hy,
+            vx: (Math.random() - 0.5) * 4,
+            vy: -1.5 + Math.random() * 3,
+            life  : 1.0,
+            decay : 0.025 + Math.random() * 0.02,
+            size  : 2 + Math.random() * 4,
+            color : '#ff4444',
+            bubble: false,
+        });
+    }
+}
+
+function updateHeartAnims() {
+    for (let i = S.heartAnims.length - 1; i >= 0; i--) {
+        const h = S.heartAnims[i];
+        h.phase += 0.02;
+
+        if (h.phase < 0.3) {
+            // Phase 1: pop up (scale 1 → 1.6)
+            h.scale = 1 + (h.phase / 0.3) * 0.6;
+            h.flash = 1.0;
+        } else {
+            // Phase 2: spin, shrink, fade away
+            const t = (h.phase - 0.3) / 0.7;
+            h.scale = 1.6 * (1 - t);
+            h.rot   = t * Math.PI * 1.5;
+            h.alpha = 1 - t;
+            h.y    -= 0.8;
+            h.flash = Math.max(0, 1 - t * 2);
+        }
+
+        if (h.phase >= 1.0) S.heartAnims.splice(i, 1);
+    }
+}
+
+function drawHeartAnims() {
+    const heartW = HUD.heartR * 2.4;
+    const heartH = heartW * 0.86;
+
+    for (const h of S.heartAnims) {
+        ctx.save();
+        ctx.globalAlpha = h.alpha;
+        ctx.translate(h.x, h.y);
+        ctx.rotate(h.rot);
+        ctx.scale(h.scale, h.scale);
+
+        // Red flash tint
+        if (h.flash > 0) {
+            ctx.shadowBlur  = 15 * h.flash;
+            ctx.shadowColor = 'rgba(255, 50, 50, ' + h.flash + ')';
+            ctx.filter = 'brightness(' + (1 + h.flash * 0.5) + ') saturate(' + (1 + h.flash) + ')';
+        }
+
+        ctx.drawImage(images.heart, -heartW / 2, -heartH / 2, heartW, heartH);
+        ctx.filter    = 'none';
+        ctx.shadowBlur = 0;
+        ctx.restore();
+    }
+}
+
+function drawHUD() {
+    ctx.save();
+
+    // ---- Coin Banner ----
+    const coinScale = 1 + S.coinPop * 0.12;
+    const coinCX = HUD.coinX + HUD.bannerW / 2;
+    const coinCY = HUD.coinY + HUD.bannerH / 2;
+    ctx.save();
+    ctx.translate(coinCX, coinCY);
+    ctx.scale(coinScale, coinScale);
+    ctx.drawImage(images.coin_ui, -HUD.bannerW / 2, -HUD.bannerH / 2, HUD.bannerW, HUD.bannerH);
+    // Coin text — centered in the field area (right half of banner)
+    const coinStr = '' + Math.floor(S.displayCoins);
+    ctx.font = 'bold 16px Fredoka, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const txOff = HUD.bannerW * HUD.textOffX - HUD.bannerW / 2;
+    const tyOff = HUD.bannerH * HUD.textOffY - HUD.bannerH / 2;
+    ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.strokeText(coinStr, txOff, tyOff);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(coinStr, txOff, tyOff);
+    ctx.restore();
+
+    // ---- Gem Banner ----
+    const gemScale = 1 + S.gemPop * 0.12;
+    const gemCX = HUD.gemX + HUD.bannerW / 2;
+    const gemCY = HUD.gemY + HUD.bannerH / 2;
+    ctx.save();
+    ctx.translate(gemCX, gemCY);
+    ctx.scale(gemScale, gemScale);
+    ctx.drawImage(images.gem_ui, -HUD.bannerW / 2, -HUD.bannerH / 2, HUD.bannerW, HUD.bannerH);
+    // Gem text — centered in the field area (right half of banner)
+    const gemStr = '' + Math.floor(S.displayGems);
+    ctx.font = 'bold 16px Fredoka, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.strokeText(gemStr, txOff, tyOff);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(gemStr, txOff, tyOff);
+    ctx.restore();
+
+    // ---- Hearts (image-based) ----
+    const heartW = HUD.heartR * 2.4;
+    const heartH = heartW * 0.86;   // asset aspect ratio 100:86
+    for (let i = 0; i < CFG.startLives; i++) {
+        // Skip hearts that are currently in their loss animation
+        const isAnimating = S.heartAnims.some(a => a.idx === i);
+        if (isAnimating) continue;
+
+        const hx = HUD.heartX + i * (heartW + HUD.heartGap);
+        const hy = HUD.heartY - heartH / 2;
+        ctx.globalAlpha = i < S.lives ? 1 : 0.25;
+        ctx.drawImage(images.heart, hx, hy, heartW, heartH);
+    }
+    ctx.globalAlpha = 1;
+
+    // Draw animated hearts on top
+    drawHeartAnims();
+
+    ctx.restore();
+}
+
+function endGame(won) {
+    S.running = false;
+    DOM.touchHint.style.display = 'none';
+    if (won) {
+        // Canvas-based victory panel
+        S.showVictory  = true;
+        S.victoryAlpha = 0;
+    } else {
+        // Canvas-based game over panel
+        S.showGameOver  = true;
+        S.gameOverAlpha = 0;
+    }
+}
+
+// ================================================================
+//  CANVAS GAME OVER PANEL
+//  Replaces the HTML #game-over overlay with a fully canvas-drawn
+//  panel using the gameover_panel.png asset. Score text is drawn on
+//  the two dark bars. Restart button is drawn below the panel.
+//  Fade-in animation via gameOverAlpha (0→1).
+// ================================================================
+
+function drawGameOverPanel() {
+    // Fade in
+    if (S.gameOverAlpha < 1) {
+        S.gameOverAlpha = Math.min(1, S.gameOverAlpha + 0.04);
+    }
+    const a = S.gameOverAlpha;
+
+    ctx.save();
+    ctx.globalAlpha = a;
+
+    // Dark backdrop
+    ctx.fillStyle = 'rgba(5, 15, 40, 0.82)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Panel image
+    ctx.drawImage(images.gameover_panel,
+        GO_PANEL.x, GO_PANEL.y, GO_PANEL.w, GO_PANEL.h);
+
+    // Score text on the dark bars — icon + text centered as a group
+    ctx.font = 'bold 18px Fredoka, Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    const cx = GO_PANEL.x + GO_PANEL.w / 2;
+    const iconSz = 20;   // icon draw size
+    const iconGap = 6;   // gap between icon and text
+
+    // Line 1 — coin icon + coin score
+    const ty1 = GO_PANEL.y + GO_PANEL.h * GO_PANEL.text1Y;
+    const scoreText = S.coins + ' Coins';
+    const scoreW = ctx.measureText(scoreText).width;
+    const totalW1 = iconSz + iconGap + scoreW;
+    const startX1 = cx - totalW1 / 2;
+    ctx.drawImage(images.coin, startX1, ty1 - iconSz / 2, iconSz, iconSz);
+    const textX1 = startX1 + iconSz + iconGap;
+    ctx.strokeText(scoreText, textX1, ty1);
+    ctx.fillStyle = '#ffd700';
+    ctx.fillText(scoreText, textX1, ty1);
+
+    // Line 2 — gem icon + gem score
+    const ty2 = GO_PANEL.y + GO_PANEL.h * GO_PANEL.text2Y;
+    const gemText = S.gems + (S.gems === 1 ? ' Gem' : ' Gems');
+    const gemW = ctx.measureText(gemText).width;
+    const totalW2 = iconSz + iconGap + gemW;
+    const startX2 = cx - totalW2 / 2;
+    ctx.drawImage(images.gem, startX2, ty2 - iconSz / 2, iconSz, iconSz);
+    const textX2 = startX2 + iconSz + iconGap;
+    ctx.strokeText(gemText, textX2, ty2);
+    ctx.fillStyle = '#c77dff';
+    ctx.fillText(gemText, textX2, ty2);
+
+    // Restart button
+    ctx.drawImage(images.restart_btn,
+        GO_PANEL.btnX, GO_PANEL.btnY, GO_PANEL.btnW, GO_PANEL.btnH);
+
+    ctx.globalAlpha = 1;
+    ctx.restore();
+}
+
+// ================================================================
+//  CANVAS VICTORY PANEL
+//  Same approach as game over panel but uses victory_panel.png.
+// ================================================================
+
+function drawVictoryPanel() {
+    if (S.victoryAlpha < 1) {
+        S.victoryAlpha = Math.min(1, S.victoryAlpha + 0.04);
+    }
+    const a = S.victoryAlpha;
+
+    ctx.save();
+    ctx.globalAlpha = a;
+
+    // Dark backdrop
+    ctx.fillStyle = 'rgba(5, 15, 40, 0.82)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Panel image
+    ctx.drawImage(images.victory_panel,
+        WIN_PANEL.x, WIN_PANEL.y, WIN_PANEL.w, WIN_PANEL.h);
+
+    // Score text with dark boxes behind them
+    ctx.font = 'bold 18px Fredoka, Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    const cx = WIN_PANEL.x + WIN_PANEL.w / 2;
+    const iconSz = 20;
+    const iconGap = 6;
+    const boxPadX = 18, boxPadY = 10, boxRadius = 12;
+    const boxW = WIN_PANEL.w * 0.7;
+
+    // Line 1 — dark box + coin icon + coin score
+    const ty1 = WIN_PANEL.y + WIN_PANEL.h * WIN_PANEL.text1Y;
+    const box1X = cx - boxW / 2, box1Y = ty1 - boxPadY - iconSz / 2;
+    const box1H = iconSz + boxPadY * 2;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+    ctx.beginPath();
+    ctx.roundRect(box1X, box1Y, boxW, box1H, boxRadius);
+    ctx.fill();
+
+    const scoreText = S.coins + ' Coins';
+    const scoreW = ctx.measureText(scoreText).width;
+    const totalW1 = iconSz + iconGap + scoreW;
+    const startX1 = cx - totalW1 / 2;
+    ctx.drawImage(images.coin, startX1, ty1 - iconSz / 2, iconSz, iconSz);
+    const textX1 = startX1 + iconSz + iconGap;
+    ctx.strokeText(scoreText, textX1, ty1);
+    ctx.fillStyle = '#ffd700';
+    ctx.fillText(scoreText, textX1, ty1);
+
+    // Line 2 — dark box + gem icon + gem score
+    const ty2 = WIN_PANEL.y + WIN_PANEL.h * WIN_PANEL.text2Y;
+    const box2X = cx - boxW / 2, box2Y = ty2 - boxPadY - iconSz / 2;
+    const box2H = iconSz + boxPadY * 2;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+    ctx.beginPath();
+    ctx.roundRect(box2X, box2Y, boxW, box2H, boxRadius);
+    ctx.fill();
+
+    const gemText = S.gems + (S.gems === 1 ? ' Gem' : ' Gems');
+    const gemW = ctx.measureText(gemText).width;
+    const totalW2 = iconSz + iconGap + gemW;
+    const startX2 = cx - totalW2 / 2;
+    ctx.drawImage(images.gem, startX2, ty2 - iconSz / 2, iconSz, iconSz);
+    const textX2 = startX2 + iconSz + iconGap;
+    ctx.strokeText(gemText, textX2, ty2);
+    ctx.fillStyle = '#c77dff';
+    ctx.fillText(gemText, textX2, ty2);
+
+    // Restart button
+    ctx.drawImage(images.restart_btn,
+        WIN_PANEL.btnX, WIN_PANEL.btnY, WIN_PANEL.btnW, WIN_PANEL.btnH);
+
+    ctx.globalAlpha = 1;
+    ctx.restore();
+}
+
+function hitWinBtn(cx, cy) {
+    return cx >= WIN_PANEL.btnX && cx <= WIN_PANEL.btnX + WIN_PANEL.btnW &&
+           cy >= WIN_PANEL.btnY && cy <= WIN_PANEL.btnY + WIN_PANEL.btnH;
+}
+
+// ================================================================
+//  INIT & GAME LOOP
+//  initGame() resets all state for a fresh game session.
+//  gameLoop() is a single rAF loop that branches on gameState:
+//    TITLE   — draws title_bg + play_btn, no game logic
+//    PLAYING — full update/draw cycle with shake, clip, HUD
+// ================================================================
+
+function initGame() {
+    S.coins     = 0;
+    S.gems      = 0;
+    S.lives     = CFG.startLives;
+    S.lane      = Math.floor(CFG.lanes / 2);
+    S.visX      = S.lane * CFG.laneW + CFG.laneW / 2;
+    S.faceRight = true;
+    S.running   = true;
+    S.time      = 0;
+    S.lastTS    = performance.now();
+    S.objects   = [];
+    S.particles = [];
+    S.sqX = 1; S.sqY = 1;
+    S.bgMidY = 0;
+    S.tailBubbles = []; S._tailTmr = 0;
+    S.shakeTime = 0; S.shakeIntensity = 0;
+    S.scorePop = 0;
+    S.frenzy = false; S.frenzyTimer = 0; S.collectTimes = [];
+    S.coinPop = 0; S.gemPop = 0; S.displayCoins = 0; S.displayGems = 0;
+    S.hitTimer = 0; S.heartAnims = [];
+    S.hasAnchorSpawned = false;
+    S.anchor = null;
+    S.showGameOver = false;
+    S.gameOverAlpha = 0;
+    S.showVictory = false;
+    S.victoryAlpha = 0;
+
+    initFishAnim();
+    initBubbles();
+
+    DOM.over.classList.remove('active');
+    updateHUD();
+}
+
+function drawTitleScreen() {
+    ctx.drawImage(images.title_bg, 0, 0, W, H);
+    ctx.drawImage(images.play_btn, PLAY_BTN.x, PLAY_BTN.y, PLAY_BTN.w, PLAY_BTN.h);
+}
+
+function gameLoop(ts) {
+    // ---- TITLE SCREEN ----
+    if (gameState === 'TITLE') {
+        ctx.clearRect(0, 0, W, H);
+        drawTitleScreen();
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+
+    // ---- PLAYING STATE ----
+    const dt = ts - S.lastTS;
+    S.lastTS = ts;
+    S.time  += dt;
+
+    // ---- update ----
+    if (S.running) {
+        updateParallax();
+        updateObjects();
+        updateFish(dt);
+        updateParticles();
+        updateBubbles();
+        updateTailBubbles();
+        updateFrenzy();
+        updateSpecialEvents(dt);
+
+        // HUD update (rolling counters + pop decay)
+        updateHUD();
+        updateHeartAnims();
+    }
+
+    // ---- draw (always, so background stays visible on overlays) ----
+    ctx.clearRect(0, 0, W, H);
+
+    // Clip all rendering to the canvas viewport — prevents any
+    // parallax layer or sprite from bleeding outside 0,0..W,H.
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, W, H);
+    ctx.clip();
+
+    // Screen shake offset
+    if (S.shakeTime > 0) {
+        const sx = (Math.random() * 2 - 1) * S.shakeIntensity;
+        const sy = (Math.random() * 2 - 1) * S.shakeIntensity;
+        ctx.translate(sx, sy);
+        S.shakeTime--;
+        S.shakeIntensity *= 0.92;
+    }
+
+    drawParallax();
+    drawGodRays();
+    drawBubbles();
+    drawSpecialEvents();
+    drawTailBubbles();
+    drawObjects();
+    drawFish();
+    drawParticles();
+
+    ctx.restore();   // release clip
+
+    // HUD drawn AFTER restore — fixed to screen, unaffected by shake/clip
+    drawHUD();
+
+    // Canvas panels (drawn on top of everything when active)
+    if (S.showGameOver) drawGameOverPanel();
+    if (S.showVictory) drawVictoryPanel();
+
+    requestAnimationFrame(gameLoop);
+}
+
+// ================================================================
+//  INPUT — Keyboard + Touch + Title Screen
+//  Keyboard: Arrow keys / WASD for lane movement (ignored on title)
+//  Touch: tap left/right halves or swipe for lane movement
+//  Title: click/tap on play button → startFromTitle()
+//  Game Over: "Dive Again" / "Play Again" → goToTitle()
+//  canvasCoords() converts screen coords to logical canvas coords.
+// ================================================================
+
+function movePlayer(dir) {
+    if (!S.running) return;
+    const prev = S.lane;
+    if (dir === 'left'  && S.lane > 0)            { S.lane--; S.faceRight = false; }
+    if (dir === 'right' && S.lane < CFG.lanes - 1) { S.lane++; S.faceRight = true;  }
+    // Lane-switch squash/stretch (compounds with collision squash via shared lerp)
+    if (S.lane !== prev) { S.sqX = 1.2; S.sqY = 0.85; }
+}
+
+// Convert screen click coords → canvas coords
+function canvasCoords(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (clientX - rect.left) * (W / rect.width),
+        y: (clientY - rect.top)  * (H / rect.height)
+    };
+}
+
+// Check if point is inside play button
+function hitPlayBtn(cx, cy) {
+    return cx >= PLAY_BTN.x && cx <= PLAY_BTN.x + PLAY_BTN.w &&
+           cy >= PLAY_BTN.y && cy <= PLAY_BTN.y + PLAY_BTN.h;
+}
+
+// Check if point is inside restart button (game over panel)
+function hitRestartBtn(cx, cy) {
+    return cx >= GO_PANEL.btnX && cx <= GO_PANEL.btnX + GO_PANEL.btnW &&
+           cy >= GO_PANEL.btnY && cy <= GO_PANEL.btnY + GO_PANEL.btnH;
+}
+
+// Start game from title screen
+function startFromTitle() {
+    gameState = 'PLAYING';
+    initGame();
+    // Music already playing from title screen — no restart needed
+}
+
+// Go back to title screen
+function goToTitle() {
+    gameState = 'TITLE';
+    S.running = false;
+    S.showGameOver = false;
+    S.gameOverAlpha = 0;
+    S.showVictory = false;
+    S.victoryAlpha = 0;
+    DOM.over.classList.remove('active');
+}
+
+document.addEventListener('keydown', e => {
+    if (gameState === 'TITLE') return;
+    if (e.key === 'ArrowLeft'  || e.key === 'a' || e.key === 'A') movePlayer('left');
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') movePlayer('right');
+});
+
+// Mouse click — title screen play button + game over restart + in-game movement
+canvas.addEventListener('click', e => {
+    const c = canvasCoords(e.clientX, e.clientY);
+    if (gameState === 'TITLE') {
+        if (hitPlayBtn(c.x, c.y)) startFromTitle();
+        return;
+    }
+    // Game over restart button — jump straight back into game
+    if (S.showGameOver && hitRestartBtn(c.x, c.y)) {
+        S.showGameOver = false;
+        S.gameOverAlpha = 0;
+        startFromTitle();
+        return;
+    }
+    // Victory restart button — jump straight back into game
+    if (S.showVictory && hitWinBtn(c.x, c.y)) {
+        S.showVictory = false;
+        S.victoryAlpha = 0;
+        startFromTitle();
+        return;
+    }
+});
+
+let touchX0 = null;
+canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const c = canvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+    if (gameState === 'TITLE') {
+        if (hitPlayBtn(c.x, c.y)) startFromTitle();
+        return;
+    }
+    // Game over restart button — jump straight back into game
+    if (S.showGameOver && hitRestartBtn(c.x, c.y)) {
+        S.showGameOver = false;
+        S.gameOverAlpha = 0;
+        startFromTitle();
+        return;
+    }
+    // Victory restart button — jump straight back into game
+    if (S.showVictory && hitWinBtn(c.x, c.y)) {
+        S.showVictory = false;
+        S.victoryAlpha = 0;
+        startFromTitle();
+        return;
+    }
+    touchX0 = e.touches[0].clientX;
+    DOM.touchHint.style.display = 'none';
+}, { passive: false });
+
+canvas.addEventListener('touchend', e => {
+    e.preventDefault();
+    if (gameState === 'TITLE') return;
+    if (touchX0 === null) return;
+    const dx = e.changedTouches[0].clientX - touchX0;
+    if (Math.abs(dx) < 20) {
+        // Tap — use side of canvas
+        const rect = canvas.getBoundingClientRect();
+        if (touchX0 - rect.left < rect.width / 2) movePlayer('left');
+        else movePlayer('right');
+    } else {
+        if (dx < -20) movePlayer('left');
+        else if (dx > 20) movePlayer('right');
+    }
+    touchX0 = null;
+}, { passive: false });
+
+DOM.restartBtn.addEventListener('click', goToTitle);
+
+// ================================================================
+//  BOOTSTRAP
+//  1. Load all assets via ASSET_MANIFEST (14 images)
+//  2. Hide the HTML loading screen
+//  3. Set gameState to TITLE and start the game loop
+//  4. Start background music (with autoplay unlock fallback)
+// ================================================================
+
+loadAllAssets().then(() => {
+    DOM.loading.style.display = 'none';
+    gameState = 'TITLE';
+    // Start music on first user interaction (browsers block autoplay)
+    function unlockAudio() {
+        bgMusic.play().then(() => {
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+        }).catch(() => {});
+    }
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
+    requestAnimationFrame(gameLoop);
+}).catch(err => {
+    console.error('[Boot] Cannot start — ' + err.message);
+    document.getElementById('loading-text').textContent = 'Asset load failed. Check console.';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niel Hochman | Game Developer & Designer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .simba-thumbnail {
+            transform: rotate(90deg);
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <header id="navbar">
+        <div class="logo"><span class="logo-text">NH</span></div>
+        <nav>
+            <ul>
+                <li><a href="#hero" class="nav-link active" data-section="hero">Home</a></li>
+                <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+                <li><a href="#games" class="nav-link" data-section="games">Games</a></li>
+                <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
+                <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+            </ul>
+        </nav>
+        <button class="menu-toggle" aria-label="Menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </header>
+
+    <div class="mobile-nav-overlay" id="mobileNav">
+        <nav>
+            <ul>
+                <li><a href="#hero" class="nav-link active" data-section="hero">Home</a></li>
+                <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+                <li><a href="#games" class="nav-link" data-section="games">Games</a></li>
+                <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
+                <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <section id="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-shapes">
+            <div class="hero-shape hero-shape--circle" data-speed="0.02" style="top: 15%; left: 10%;"></div>
+            <div class="hero-shape hero-shape--triangle" data-speed="0.03" style="top: 25%; right: 15%;"></div>
+            <div class="hero-shape hero-shape--diamond" data-speed="0.015" style="bottom: 20%; left: 20%;"></div>
+            <div class="hero-shape hero-shape--circle" data-speed="0.025" style="bottom: 30%; right: 10%;"></div>
+            <div class="hero-shape hero-shape--triangle" data-speed="0.02" style="top: 60%; left: 5%;"></div>
+            <div class="hero-shape hero-shape--diamond" data-speed="0.035" style="top: 10%; right: 30%;"></div>
+            <div class="hero-shape hero-shape--circle" data-speed="0.018" style="bottom: 10%; right: 25%;"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-name">Niel Hochman</h1>
+            <p class="hero-subtitle" data-text="Game Developer | Animator | Designer | Tech Artist"></p>
+            <div class="hero-cta">
+                <a href="#projects" class="btn-glass">View My Work</a>
+                <a href="Niel_Resume.pdf" target="_blank" class="btn-glass btn-glass--accent">Download Resume</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="section-header reveal">
+            <h2>About Me</h2>
+        </div>
+        <div class="about-layout reveal">
+            <div class="about-photo">
+                <div class="about-photo-frame">
+                    <img src="Profile_pic.jpg" alt="Niel Hochman">
+                </div>
+            </div>
+            <div class="about-body glass">
+                <p>Hello! I'm Niel Hochman, a creative game developer and tech artist with a passion for bringing characters and worlds to life. I blend technical expertise with artistic vision to create engaging experiences that captivate audiences across different platforms.</p>
+                <p>With a background in animation (studied at Animation Mentor), game development, and technical art, I've worked on diverse projects from character animations to interactive game experiences. I love exploring the intersection of storytelling, visual design, and interactive media.</p>
+                <p>My approach combines technical precision with creative imagination, allowing me to transform concepts into polished, professional games and visual experiences that connect with audiences.</p>
+                <a href="Niel_Resume.pdf" target="_blank" class="btn-glass">Download Resume</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="games">
+        <div class="section-header reveal">
+            <h2>My Games</h2>
+        </div>
+        <div class="filter-pills reveal">
+            <button class="filter-pill active" data-filter="all">All</button>
+        </div>
+        <div class="games-grid reveal">
+            <div class="game-card glass" data-category="game">
+                <div class="game-card-image">
+                    <iframe src="https://naragorn.netlify.app/" style="width: 100%; height: 220px; border: none; border-radius: 12px 12px 0 0; pointer-events: none;" loading="lazy" title="Naragorn Preview"></iframe>
+                </div>
+                <div class="game-card-body">
+                    <h3>Naragorn</h3>
+                    <p>A mobile adventure game — defend the village from waves of enemies!</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                        <span>Mobile</span>
+                    </div>
+                    <button class="btn-glass" data-demo-url="https://naragorn.netlify.app/" data-portrait="true">Play Demo</button>
+                </div>
+            </div>
+            <div class="game-card glass" data-category="game">
+                <div class="game-card-image">
+                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #f093fb, #f5576c); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">Coming Soon</div>
+                </div>
+                <div class="game-card-body">
+                    <h3>Wrath Of The Sea</h3>
+                    <p>Coming soon...</p>
+                    <div class="tech-tags">
+                        <span>Unreal Engine</span>
+                        <span>C++</span>
+                    </div>
+                    <button class="btn-glass" data-demo-url="" disabled>Coming Soon</button>
+                </div>
+            </div>
+            <div class="game-card glass" data-category="game">
+                <div class="game-card-image">
+                    <iframe src="GameFolder/Game.html" style="width: 100%; height: 220px; border: none; border-radius: 12px 12px 0 0; pointer-events: none;" loading="lazy" title="Under The Sea Preview"></iframe>
+                </div>
+                <div class="game-card-body">
+                    <h3>Under The Sea</h3>
+                    <p>A mobile underwater game developed for a SETT assignment — collect coins and dodge obstacles!</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                        <span>Mobile</span>
+                    </div>
+                    <button class="btn-glass" data-demo-url="GameFolder/Game.html" data-portrait="true">Play Demo</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="section-header reveal">
+            <h2>My Projects</h2>
+        </div>
+        <div class="filter-pills reveal">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="3d">3D</button>
+            <button class="filter-pill" data-filter="character">Character</button>
+            <button class="filter-pill" data-filter="2d">2D</button>
+            <button class="filter-pill" data-filter="environment">Environment</button>
+        </div>
+        <div class="projects-grid reveal">
+            <a href="projects/orc-character.html" class="project-card glass" data-category="3d character">
+                <div class="project-card-image">
+                    <img src="projects/orc2.png" alt="Fantasy Orc">
+                </div>
+                <div class="project-card-body">
+                    <h3>Fantasy Orc</h3>
+                    <span class="category-tag">3D Character</span>
+                </div>
+            </a>
+            <a href="projects/walle-character.html" class="project-card glass" data-category="3d character">
+                <div class="project-card-image">
+                    <img src="projects/walle4.png" alt="Wall-E Recreation">
+                </div>
+                <div class="project-card-body">
+                    <h3>Wall-E Recreation</h3>
+                    <span class="category-tag">3D Character</span>
+                </div>
+            </a>
+            <a href="projects/simba-artwork.html" class="project-card glass" data-category="2d character">
+                <div class="project-card-image">
+                    <img src="projects/image0 (1).jpeg" alt="Simba" class="simba-thumbnail">
+                </div>
+                <div class="project-card-body">
+                    <h3>Simba</h3>
+                    <span class="category-tag">2D Character</span>
+                </div>
+            </a>
+            <a href="projects/axe-design.html" class="project-card glass" data-category="3d character">
+                <div class="project-card-image">
+                    <img src="projects/image1.png" alt="Sci-Fi Robot">
+                </div>
+                <div class="project-card-body">
+                    <h3>Sci-Fi Robot</h3>
+                    <span class="category-tag">3D Character</span>
+                </div>
+            </a>
+            <a href="projects/robot-design.html" class="project-card glass" data-category="3d prop">
+                <div class="project-card-image">
+                    <img src="projects/image2.png" alt="Fantasy Axe">
+                </div>
+                <div class="project-card-body">
+                    <h3>Fantasy Axe</h3>
+                    <span class="category-tag">3D Prop</span>
+                </div>
+            </a>
+            <a href="projects/stylized-home.html" class="project-card glass" data-category="3d environment">
+                <div class="project-card-image">
+                    <img src="projects/homeupgraded.png" alt="Stylized Home">
+                </div>
+                <div class="project-card-body">
+                    <h3>Stylized Home</h3>
+                    <span class="category-tag">3D Environment</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="section-header reveal">
+            <h2>Get in Touch</h2>
+        </div>
+        <div class="contact-cards reveal">
+            <div class="contact-card glass">
+                <i class="fas fa-envelope"></i>
+                <h3>Email</h3>
+                <a href="mailto:niel.hochman@gmail.com">niel.hochman@gmail.com</a>
+            </div>
+            <div class="contact-card glass">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Location</h3>
+                <p>Israel</p>
+            </div>
+            <div class="contact-card glass">
+                <i class="fab fa-linkedin-in"></i>
+                <h3>LinkedIn</h3>
+                <a href="https://www.linkedin.com/in/niel-hochman-64a007291" target="_blank">Connect</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/niel-hochman-64a007291" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>&copy; 2025 Niel Hochman. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div class="game-modal" id="gameModal">
+        <div class="game-modal-content glass">
+            <button class="modal-close">&times;</button>
+            <iframe id="gameIframe" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

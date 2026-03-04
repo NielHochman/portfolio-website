@@ -1,0 +1,21 @@
+node_modules/
+.claude/
+.playwright-mcp/
+
+# Temp screenshots from dev
+game-modal-test.png
+naragorn-check.png
+portfolio-all-visible.png
+portfolio-full-page.png
+under-sea-crisp.png
+under-sea-fixed.png
+under-sea-scaled.png
+under-the-sea-modal.png
+
+# Temp/dev HTML files
+preview.html
+resume-pdf.html
+resume-view.html
+resume.html
+resume.pdf.html
+upload-profile.html
