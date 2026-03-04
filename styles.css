@@ -264,6 +264,13 @@ nav ul {
     gap: 24px;
 }
 
+.mobile-nav-overlay nav ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
 .mobile-nav-overlay .nav-link {
     font-size: clamp(1.4rem, 5vw, 1.8rem);
     font-weight: 600;
@@ -963,7 +970,7 @@ footer {
     }
 
     /* Hide desktop nav, show hamburger */
-    nav ul {
+    header nav ul {
         display: none;
     }
 
