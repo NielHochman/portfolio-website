@@ -118,16 +118,16 @@
             </div>
             <div class="game-card glass" data-category="game">
                 <div class="game-card-image">
-                    <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #f093fb, #f5576c); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">Coming Soon</div>
+                    <video src="assets/wrath-of-the-sea-trailer.mp4" muted loop playsinline preload="metadata" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px 12px 0 0;"></video>
                 </div>
                 <div class="game-card-body">
                     <h3>Wrath Of The Sea</h3>
-                    <p>Coming soon...</p>
+                    <p>A naval combat game built in Unreal Engine — battle the seas and conquer your enemies!</p>
                     <div class="tech-tags">
                         <span>Unreal Engine</span>
                         <span>C++</span>
                     </div>
-                    <button class="btn-glass" data-demo-url="" disabled>Coming Soon</button>
+                    <button class="btn-glass" data-video-url="assets/wrath-of-the-sea-trailer.mp4">Watch Trailer</button>
                 </div>
             </div>
             <div class="game-card glass" data-category="game">
@@ -254,6 +254,7 @@
         <div class="game-modal-content glass">
             <button class="modal-close">&times;</button>
             <iframe id="gameIframe" src="" allowfullscreen></iframe>
+            <video id="gameVideo" src="" controls style="display:none; width:100%; height:100%; border-radius: 12px;"></video>
         </div>
     </div>
 

@@ -219,20 +219,36 @@ function initFilters() {
 function initGameModal() {
   const modal = document.getElementById('gameModal');
   const iframe = document.getElementById('gameIframe');
+  const video = document.getElementById('gameVideo');
   const closeBtn = modal ? modal.querySelector('.modal-close') : null;
   if (!modal || !iframe) return;
 
   const content = modal.querySelector('.game-modal-content');
 
   const openModal = (url, isPortrait) => {
+    iframe.style.display = '';
+    if (video) video.style.display = 'none';
     iframe.src = url;
     if (content) content.classList.toggle('portrait', isPortrait);
+    modal.classList.add('active');
+  };
+
+  const openVideoModal = (url) => {
+    iframe.style.display = 'none';
+    if (video) {
+      video.style.display = '';
+      video.src = url;
+      video.play();
+    }
+    if (content) content.classList.remove('portrait');
     modal.classList.add('active');
   };
 
   const closeModal = () => {
     modal.classList.remove('active');
     iframe.src = '';
+    iframe.style.display = '';
+    if (video) { video.pause(); video.src = ''; video.style.display = 'none'; }
     if (content) content.classList.remove('portrait');
   };
 
@@ -245,12 +261,26 @@ function initGameModal() {
     });
   });
 
+  document.querySelectorAll('[data-video-url]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const url = btn.getAttribute('data-video-url');
+      if (url) openVideoModal(url);
+    });
+  });
+
   if (closeBtn) {
     closeBtn.addEventListener('click', closeModal);
   }
 
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
+  });
+
+  // Auto-play video previews on hover
+  document.querySelectorAll('.game-card-image video').forEach(vid => {
+    vid.closest('.game-card').addEventListener('mouseenter', () => vid.play());
+    vid.closest('.game-card').addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
   });
 }
 
